@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NASA Random Photo</title>
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    #photo-container {
+      max-width: 80%;
+      margin: 0 auto;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .copy-button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .copy-button i {
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Random NASA Photo</h1>
+  <div id="photo-container">
+    <h2 id="photo-title">Title will appear here</h2>
+    <img id="photo" src="" alt="NASA photo">
+    <p id="photo-description">Description will appear here</p>
+  </div>
+  
+  <!-- Button to fetch random photo -->
+  <button onclick="fetchRandomPhoto()">Get Random Photo</button>
+
+  <!-- Button to copy the information -->
+  <button class="copy-button" onclick="copyToClipboard()">
+    <i class="fas fa-copy"></i> Copy Title, Description, and Image URL
+  </button>
+
+  <script>
+    function fetchRandomPhoto() {
+      fetch('/randomphoto')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('photo-title').textContent = data.title;
+          document.getElementById('photo').src = data.url;
+          document.getElementById('photo-description').textContent = data.explanation;
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    }
+
+    function copyToClipboard() {
+      const title = document.getElementById('photo-title').textContent;
+      const description = document.getElementById('photo-description').textContent;
+      const imageUrl = document.getElementById('photo').src;
+
+      // Create a string with title, description, and image URL
+      const textToCopy = `Title: ${title}\nDescription: ${description}\nImage URL: ${imageUrl}`;
+
+      // Create a temporary textarea to copy the content
+      const tempTextArea = document.createElement('textarea');
+      tempTextArea.value = textToCopy;
+      document.body.appendChild(tempTextArea);
+      tempTextArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempTextArea);
+
+      alert('Copied to clipboard!');
+    }
+  </script>
+</body>
+</html>
